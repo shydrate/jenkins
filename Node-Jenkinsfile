@@ -1,0 +1,36 @@
+pipeline {
+  agent {
+  label 'master'
+}
+    
+  tools {
+      nodejs "toolname" //tool name from global tool configuration
+      }
+ 
+  stages {
+    stage('git clone'){
+       steps {
+           git branch: 'dev', credentialsId: '', url: 'git@github.com:test/test.git' //put credentialId from jenkins credentials
+      }  
+    }
+    stage('build with npm') {
+       when {
+                // deployed with with npm install
+                expression { params.npm == 'withnpm' }
+            }
+       steps {
+        sh 'npm install'
+        sh 'ng build  --configuration=dev --output-hashing=all'
+      }
+    }
+    stage('build without npm') {
+       when {
+                // deployed with with npm install
+                expression { params.npm == 'withoutnpm' }
+            }
+       steps {
+        sh 'ng build  --configuration=dev --output-hashing=all'
+      }
+    }
+  }
+}
