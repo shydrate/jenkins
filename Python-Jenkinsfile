@@ -1,0 +1,32 @@
+pipeline {
+  agent {
+  label 'master'
+}
+    
+  stages {
+    stage('git clone'){
+       steps {
+           git branch: 'branch_name', credentialsId: 'pickup from jenkins credentials', url: 'git@github.com:test/example.git'
+      }  
+    }
+    stage('build with pipinstall') {
+       when {
+                // deployed with pip install
+                expression { params.python == 'withpip' }
+            }
+       steps {
+        sh './env.sh'
+        sh 'rsync -rtav  /var/lib/jenkins/workspace/jobname/* /opt/'         
+      }
+    }
+    stage('build without pipinstall') {
+       when {
+                // deployed with without pip install
+                expression { params.python == 'withoutpip' }
+            }
+       steps {
+        sh 'pip3 list'
+      }
+    }
+  }
+}
