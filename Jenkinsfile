@@ -1,11 +1,9 @@
-pipeline {
-    agent { docker  { image 'python:3.5.1' 
-                      args '-u root -v /var/run/docker.sock:/var/run/docker.sock'  } }
-    stages {
-        stage('first') {
-            steps {
-                sh 'python --version'
-            }
-        }
+node('master'){
+stage('first test')
+{
+    test = tool name: 'mvn'
+    test1 = tool name: 'node', type: 'nodejs'
+    sh "${test}/bin/mvn -v"
+    sh "${test1}/bin/node -v"
     }
 }
